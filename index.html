@@ -35,7 +35,7 @@
     .container {
         max-width: 800px;
         margin: 0 auto;
-        padding: 0 15px; /* Add padding for mobile */
+        padding: 0 15px; 
         width: 100%;
         box-sizing: border-box;
     }
@@ -50,7 +50,7 @@
 
     .controls {
         display: flex;
-        flex-wrap: wrap; /* Allow buttons to wrap on mobile */
+        flex-wrap: wrap; 
         gap: 10px;
         justify-content: center;
         margin-bottom: 20px;
@@ -64,8 +64,8 @@
         color: #1a1a1a;
         cursor: pointer;
         transition: all 0.3s;
-        min-width: 120px; /* Ensure buttons are easily tappable */
-        padding: 12px 20px; /* Larger touch targets for mobile */
+        min-width: 120px; 
+        padding: 12px 20px; 
     }
 
     button:hover {
@@ -107,19 +107,19 @@
         margin-bottom: 10px;
         border-radius: 5px;
         display: flex;
-        flex-direction: column; /* Stack content on mobile */
+        flex-direction: column; 
         gap: 10px;
     }
 
     .file-item button {
-        width: 100%; /* Full width buttons on mobile */
+        width: 100%; 
         padding: 5px 10px;
         font-size: 0.9em;
     }
 
     @media (min-width: 768px) {
         .header {
-            flex-direction: row; /* Return to row layout on desktop */
+            flex-direction: row; 
             text-align: left;
             gap: 20px;
         }
@@ -393,7 +393,7 @@
                 buffer.sampleRate
             );
 
-            // Copy the selected portion of audio
+            
             for (let channel = 0; channel < numberOfChannels; channel++) {
                 const channelData = buffer.getChannelData(channel);
                 const snippetData = snippetBuffer.getChannelData(channel);
@@ -402,7 +402,7 @@
                 }
             }
 
-            // Convert to MP3
+            
             const mp3Encoder = new lamejs.Mp3Encoder(1, snippetBuffer.sampleRate, 128);
             const samples = new Int16Array(snippetBuffer.length);
             const leftChannel = snippetBuffer.getChannelData(0);
@@ -491,10 +491,10 @@
                 return;
             }
 
-            // Remove existing region
+            
             wavesurfer.clearRegions();
 
-            // Create new region with manual times
+            
             activeRegion = wavesurfer.addRegion({
                 start: start,
                 end: end,
